@@ -62,7 +62,7 @@
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
             <p class="text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Gestion Employés') }}. Tous droits réservés.
+                &copy; {{ date('Y') }} {{ config('app.name', 'Gestion Employés') }}.
             </p>
         </div>
     </footer>
