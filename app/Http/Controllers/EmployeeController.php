@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -12,7 +13,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::with('service')->get();
 
         return view('employees.index', compact('employees'));
     }
@@ -23,9 +24,11 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        return view('employees.create');
-    }
+        $services = Service::all();
 
+        return view('employees.create', compact('services'));
+    }
+   
 
     /**
      * Enregistrer un nouvel employé
@@ -41,6 +44,7 @@ class EmployeeController extends Controller
 
 
         Employee::create([
+            'service_id' => $request->service_id,
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'postnom' => $request->postnom,
@@ -56,13 +60,12 @@ class EmployeeController extends Controller
                          ->with('success', 'Employé ajouté avec succès');
     }
 
-
     /**
      * Afficher un employé
      */
     public function show(string $id)
     {
-        $employee = Employee::find($id);
+        $employee = Employee::with('service')->find($id);
 
         return view('employees.show', compact('employee'));
     }
@@ -74,13 +77,14 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = Employee::find($id);
+        $services = Service::all();
 
-        return view('employees.edit', compact('employee'));
+        return view('employees.edit', compact('employee', 'services'));
     }
 
 
     /**
-     * Modifier un employé
+     * Modifier un destroy
      */
     public function update(Request $request, string $id)
     {
@@ -88,6 +92,7 @@ class EmployeeController extends Controller
 
 
         $employee->update([
+            'service_id' => $request->service_id,
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'postnom' => $request->postnom,

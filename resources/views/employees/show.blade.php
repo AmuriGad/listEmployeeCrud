@@ -80,6 +80,19 @@
                                 <p class="text-sm text-gray-500">Département</p>
                                 <p class="font-medium text-gray-800">{{ $employee->departement ?? 'Non renseigné' }}</p>
                             </div>
+
+                            <div>
+                                <p class="text-sm text-gray-500">Service</p>
+                                <p class="font-medium text-gray-800">
+                                    @if($employee->service)
+                                        <a href="{{ route('services.show', $employee->service->id_service) }}" class="text-blue-600 hover:text-blue-800">
+                                            {{ $employee->service->nom }}
+                                        </a>
+                                    @else
+                                        Non renseigné
+                                    @endif
+                                </p>
+                            </div>
                             
                             <div>
                                 <p class="text-sm text-gray-500">Date d'embauche</p>

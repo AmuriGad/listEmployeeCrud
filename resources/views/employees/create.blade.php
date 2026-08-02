@@ -30,6 +30,19 @@
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="service_id" class="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                        <select name="service_id" id="service_id"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <option value="">-- Aucun service --</option>
+                            @foreach($services as $service)
+                                <option value="{{ $service->id_service }}" {{ old('service_id') == $service->id_service ? 'selected' : '' }}>
+                                    {{ $service->nom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div>
                         <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">Nom <span class="text-red-500">*</span></label>
                         <input type="text" name="nom" id="nom" value="{{ old('nom') }}" required

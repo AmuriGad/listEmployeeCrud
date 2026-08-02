@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     protected $fillable = [
+        'service_id',
         'nom',
         'prenom',
         'postnom',
@@ -17,8 +18,13 @@ class Employee extends Model
         'date_embauche'
     ];
 
-
     protected $casts = [
         'date_embauche' => 'date',
     ];
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id', 'id_service');
+    }
 }
+
