@@ -48,6 +48,12 @@
                     <a href="{{ route('services.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
                         Services
                     </a>
+                    <a href="{{ route('demande-conges.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                        Demandes de congé
+                    </a>
+                    <a href="{{ route('demande-conges.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                        + Nouvelle demande
+                    </a>
                     <a href="{{ route('employees.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
                         + Nouvel employé
                     </a>

@@ -26,5 +26,10 @@ class Employee extends Model
     {
         return $this->belongsTo(Service::class, 'service_id', 'id_service');
     }
+
+    public function demandeConges()
+    {
+        return $this->hasMany(DemandeConge::class, 'employee_id', 'id');
+    }
 }
 

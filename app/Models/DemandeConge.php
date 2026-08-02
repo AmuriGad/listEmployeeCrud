@@ -32,5 +32,29 @@ class DemandeConge extends Model
     {
         return $this->belongsTo(TypeConge::class, 'type_conge_id', 'id_type_conge');
     }
+
+    /**
+     * Libellé lisible du statut.
+     */
+    public function statutLabel(): string
+    {
+        return match ($this->statut) {
+            StatutConge::ACCEPTE => 'Accepté',
+            StatutConge::REFUSE  => 'Refusé',
+            default              => 'En attente',
+        };
+    }
+
+    /**
+     * Classes CSS du badge selon le statut.
+     */
+    public function statutBadgeClass(): string
+    {
+        return match ($this->statut) {
+            StatutConge::ACCEPTE => 'bg-green-100 text-green-800',
+            StatutConge::REFUSE  => 'bg-red-100 text-red-800',
+            default              => 'bg-yellow-100 text-yellow-800',
+        };
+    }
 }
 

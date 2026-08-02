@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\DemandeCongeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,7 @@ use App\Http\Controllers\ServiceController;
 
 Route::resource('employees', EmployeeController::class);
 Route::resource('services', ServiceController::class);
+Route::resource('demande-conges', DemandeCongeController::class);
 
 Route::get('/', function () {
     return redirect()->route('employees.index');
