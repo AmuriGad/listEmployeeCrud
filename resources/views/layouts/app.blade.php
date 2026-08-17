@@ -42,6 +42,9 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
+                    <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                        Dashboard
+                    </a>
                     <a href="{{ route('employees.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
                         Employés
                     </a>
@@ -57,6 +60,14 @@
                     <a href="{{ route('employees.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
                         + Nouvel employé
                     </a>
+                    {{-- Bouton Déconnexion --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="text-gray-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition border border-gray-200 hover:border-red-300">
+                            Déconnexion
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

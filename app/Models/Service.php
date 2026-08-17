@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-     protected $primaryKey = 'id_service';
+    protected $primaryKey = 'id_service';
 
     protected $fillable = [
-        'nom'
+        'nom',
     ];
-
 
     public function employees()
     {
-        return $this->hasMany(Employee::class, 'service_id', 'id_service');
+        return $this->hasMany(
+            Employee::class,
+            'service_id',
+            'id_service'
+        );
     }
 }

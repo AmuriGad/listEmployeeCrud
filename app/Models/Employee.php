@@ -15,7 +15,8 @@ class Employee extends Model
         'telephone',
         'poste',
         'departement',
-        'date_embauche'
+        'date_embauche',
+        'password'
     ];
 
     protected $casts = [
