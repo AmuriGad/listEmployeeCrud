@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,16 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         $this->call([
             TypeCongeSeeder::class,
-        ]);
-
-        User::factory()->create([
-            'name'     => 'Test User',
-            'email'    => 'test@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            DRHSeeder::class,
         ]);
     }
 }

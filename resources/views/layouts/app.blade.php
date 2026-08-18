@@ -1,93 +1,111 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Gestion des Employés') - {{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', 'GestionRH') — {{ config('app.name', 'GestionRH') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS via CDN pour le développement -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Instrument Sans', 'sans-serif'],
-                    },
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
         }
     </script>
-
-    @stack('styles')
 </head>
-<body class="font-sans antialiased bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="{{ route('employees.index') }}" class="flex items-center space-x-2">
-                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span class="font-bold text-xl text-gray-800">Gestion Employés</span>
-                    </a>
-                </div>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
-                        Dashboard
+    {{-- Barre de navigation --}}
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+
+            {{-- Logo --}}
+            <a href="{{ Auth::user()->isDRH() ? route('dashboard') : route('employe.dashboard') }}"
+               class="font-semibold text-gray-900 text-base">
+                GestionRH
+            </a>
+
+            {{-- Liens --}}
+            <div class="flex items-center gap-1 text-sm">
+                @if(Auth::user()->isDRH())
+                    <a href="{{ route('dashboard') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('dashboard') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
+                        Tableau de bord
                     </a>
-                    <a href="{{ route('employees.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                    <a href="{{ route('employees.index') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('employees*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
                         Employés
                     </a>
-                    <a href="{{ route('services.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                    <a href="{{ route('services.index') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('services*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
                         Services
                     </a>
-                    <a href="{{ route('demande-conges.index') }}" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition">
-                        Demandes de congé
+                    <a href="{{ route('demande-conges.index') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('demande-conges*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
+                        Congés
                     </a>
-                    <a href="{{ route('demande-conges.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                        + Nouvelle demande
+                @else
+                    <a href="{{ route('employe.dashboard') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('mon-espace/dashboard') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
+                        Mon espace
                     </a>
-                    <a href="{{ route('employees.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                        + Nouvel employé
+                    <a href="{{ route('employe.demande.create') }}"
+                       class="px-3 py-1.5 rounded {{ request()->is('mon-espace/demande-conge/nouvelle') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} transition">
+                        Nouvelle demande
                     </a>
-                    {{-- Bouton Déconnexion --}}
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                                class="text-gray-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition border border-gray-200 hover:border-red-300">
-                            Déconnexion
-                        </button>
-                    </form>
-                </div>
+                @endif
+            </div>
+
+            {{-- Profil + Déconnexion --}}
+            <div class="flex items-center gap-3 text-sm">
+                <span class="text-gray-500">
+                    {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
+                    @if(Auth::user()->isDRH())
+                        <span class="ml-1 text-xs font-medium text-blue-600">(DRH)</span>
+                    @endif
+                </span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-gray-500 hover:text-red-600 transition">
+                        Déconnexion
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
 
-    <!-- Contenu principal -->
-    <main>
+    {{-- Messages flash --}}
+    @if(session('success'))
+        <div class="max-w-6xl mx-auto px-4 pt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 text-sm px-4 py-3 rounded">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="max-w-6xl mx-auto px-4 pt-4">
+            <div class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
+    {{-- Contenu --}}
+    <main class="flex-1">
         @yield('content')
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Gestion Employés') }}.
-            </p>
-        </div>
+    {{-- Footer --}}
+    <footer class="border-t border-gray-200 bg-white py-3 mt-8">
+        <p class="text-center text-gray-400 text-xs">
+            &copy; {{ date('Y') }} GestionRH
+        </p>
     </footer>
 
     @stack('scripts')
 </body>
 </html>
-

@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
-class Employee extends Model
+class Employee extends Authenticatable
 {
+    use Notifiable;
+
     protected $fillable = [
         'service_id',
         'nom',
@@ -16,12 +21,26 @@ class Employee extends Model
         'poste',
         'departement',
         'date_embauche',
-        'password'
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
         'date_embauche' => 'date',
+        'password'      => 'hashed',
     ];
+
+    /**
+     * Vérifie si l'employé est DRH (administrateur).
+     */
+    public function isDRH(): bool
+    {
+        return $this->poste === 'DRH';
+    }
 
     public function service()
     {
@@ -33,4 +52,3 @@ class Employee extends Model
         return $this->hasMany(DemandeConge::class, 'employee_id', 'id');
     }
 }
-

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -36,25 +37,25 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nom' => 'required',
-            'prenom' => 'required',
-            'email' => 'required|email',
-            'poste' => 'required',
+            'nom'      => 'required',
+            'prenom'   => 'required',
+            'email'    => 'required|email|unique:employees,email',
+            'poste'    => 'required',
+            'password' => 'required|min:6',
         ]);
-
 
         Employee::create([
-            'service_id' => $request->service_id,
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'postnom' => $request->postnom,
-            'email' => $request->email,
-            'telephone' => $request->telephone,
-            'poste' => $request->poste,
-            'departement' => $request->departement,
+            'service_id'    => $request->service_id,
+            'nom'           => $request->nom,
+            'prenom'        => $request->prenom,
+            'postnom'       => $request->postnom,
+            'email'         => $request->email,
+            'telephone'     => $request->telephone,
+            'poste'         => $request->poste,
+            'departement'   => $request->departement,
             'date_embauche' => $request->date_embauche,
+            'password'      => Hash::make($request->password),
         ]);
-
 
         return redirect()->route('employees.index')
                          ->with('success', 'Employé ajouté avec succès');
@@ -92,17 +93,21 @@ class EmployeeController extends Controller
 
 
         $employee->update([
-            'service_id' => $request->service_id,
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'postnom' => $request->postnom,
-            'email' => $request->email,
-            'telephone' => $request->telephone,
-            'poste' => $request->poste,
-            'departement' => $request->departement,
+            'service_id'    => $request->service_id,
+            'nom'           => $request->nom,
+            'prenom'        => $request->prenom,
+            'postnom'       => $request->postnom,
+            'email'         => $request->email,
+            'telephone'     => $request->telephone,
+            'poste'         => $request->poste,
+            'departement'   => $request->departement,
             'date_embauche' => $request->date_embauche,
         ]);
 
+        // Mise à jour du mot de passe si fourni
+        if ($request->filled('password')) {
+            $employee->update(['password' => Hash::make($request->password)]);
+        }
 
         return redirect()->route('employees.index')
                          ->with('success', 'Employé modifié avec succès');

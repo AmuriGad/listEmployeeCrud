@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\DemandeConge;
 use App\Models\Employee;
 use App\Models\TypeConge;
-use App\StatutConge;
 use Illuminate\Http\Request;
 
 class DemandeCongeController extends Controller
@@ -15,17 +14,19 @@ class DemandeCongeController extends Controller
      */
     public function index()
     {
-        $demandes = DemandeConge::with(['employee', 'typeConge'])->get();
+        $demandes = DemandeConge::with(['employee', 'typeConge'])
+            ->orderByDesc('created_at')
+            ->get();
 
         return view('demandeConge.index', compact('demandes'));
     }
 
     /**
-     * Afficher le formulaire de création d'une demande de congé.
+     * Afficher le formulaire de création d'une demande de congé (côté DRH).
      */
     public function create()
     {
-        $employees = Employee::orderBy('nom')->orderBy('prenom')->get();
+        $employees  = Employee::orderBy('nom')->orderBy('prenom')->get();
         $typeConges = TypeConge::orderBy('libelle')->get();
 
         if ($employees->isEmpty()) {
@@ -35,14 +36,14 @@ class DemandeCongeController extends Controller
 
         if ($typeConges->isEmpty()) {
             return redirect()->route('demande-conges.index')
-                ->with('error', 'Aucun type de congé disponible. Veuillez d\'abord ajouter des types de congé.');
+                ->with('error', 'Aucun type de congé disponible.');
         }
 
         return view('demandeConge.create', compact('employees', 'typeConges'));
     }
 
     /**
-     * Enregistrer une nouvelle demande de congé.
+     * Enregistrer une nouvelle demande de congé (côté DRH).
      */
     public function store(Request $request)
     {
@@ -58,7 +59,7 @@ class DemandeCongeController extends Controller
             'type_conge_id' => $validated['type_conge_id'],
             'date_debut'    => $validated['date_debut'],
             'date_fin'      => $validated['date_fin'],
-            'statut'        => StatutConge::EN_ATTENTE,
+            'statut'        => 'en_attente',   // Toujours "en attente" à la création
         ]);
 
         return redirect()->route('demande-conges.index')
@@ -80,8 +81,8 @@ class DemandeCongeController extends Controller
      */
     public function edit(string $id)
     {
-        $demande = DemandeConge::findOrFail($id);
-        $employees = Employee::orderBy('nom')->orderBy('prenom')->get();
+        $demande    = DemandeConge::findOrFail($id);
+        $employees  = Employee::orderBy('nom')->orderBy('prenom')->get();
         $typeConges = TypeConge::orderBy('libelle')->get();
 
         return view('demandeConge.edit', compact('demande', 'employees', 'typeConges'));
@@ -105,7 +106,29 @@ class DemandeCongeController extends Controller
         $demande->update($validated);
 
         return redirect()->route('demande-conges.show', $demande->id_demande)
-            ->with('success', 'Demande de congé modifiée avec succès.');
+            ->with('success', 'Demande de congé mise à jour avec succès.');
+    }
+
+    /**
+     * Changer uniquement le statut d'une demande — action rapide DRH.
+     */
+    public function changerStatut(Request $request, string $id)
+    {
+        $request->validate([
+            'statut' => 'required|in:en_attente,accepte,refuse',
+        ]);
+
+        $demande = DemandeConge::findOrFail($id);
+        $demande->update(['statut' => $request->statut]);
+
+        $labels = [
+            'en_attente' => 'remise en attente',
+            'accepte'    => 'acceptée',
+            'refuse'     => 'refusée',
+        ];
+
+        return redirect()->route('demande-conges.show', $demande->id_demande)
+            ->with('success', 'Demande ' . ($labels[$request->statut] ?? 'mise à jour') . ' avec succès.');
     }
 
     /**
@@ -120,4 +143,3 @@ class DemandeCongeController extends Controller
             ->with('success', 'Demande de congé supprimée avec succès.');
     }
 }
-
