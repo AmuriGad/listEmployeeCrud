@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\StatutConge;
 use Illuminate\Database\Eloquent\Model;
 
 class DemandeConge extends Model
@@ -19,8 +18,7 @@ class DemandeConge extends Model
 
     protected $casts = [
         'date_debut' => 'date',
-        'date_fin' => 'date',
-        'statut' => StatutConge::class,
+        'date_fin'   => 'date',
     ];
 
     public function employee()
@@ -39,9 +37,9 @@ class DemandeConge extends Model
     public function statutLabel(): string
     {
         return match ($this->statut) {
-            StatutConge::ACCEPTE => 'Accepté',
-            StatutConge::REFUSE  => 'Refusé',
-            default              => 'En attente',
+            'accepte'   => 'Accepté',
+            'refuse'    => 'Refusé',
+            default     => 'En attente',
         };
     }
 
@@ -51,9 +49,9 @@ class DemandeConge extends Model
     public function statutBadgeClass(): string
     {
         return match ($this->statut) {
-            StatutConge::ACCEPTE => 'bg-green-100 text-green-800',
-            StatutConge::REFUSE  => 'bg-red-100 text-red-800',
-            default              => 'bg-yellow-100 text-yellow-800',
+            'accepte'   => 'bg-green-50 border border-green-200 text-green-700',
+            'refuse'    => 'bg-red-50 border border-red-200 text-red-700',
+            default     => 'bg-yellow-50 border border-yellow-200 text-yellow-700',
         };
     }
 }
