@@ -15,4 +15,3 @@ Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
 Route::apiResource('/employees', EmployeeController::class)->names('api.employees');
 Route::apiResource('/services', ServiceController::class)->names('api.services');
 Route::apiResource('/demande-conges', DemandeCongeController::class)->names('api.demande-conges');
-
